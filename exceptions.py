@@ -21,3 +21,8 @@ class ConnectinError(Exception):
 class EmptyResponseFromAPI(NotForSending):
     """Пустой ответ от API."""
     pass
+
+
+class TelegramError(NotForSending):
+    """Ошибка телеграма."""
+    pass

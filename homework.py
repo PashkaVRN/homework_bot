@@ -34,9 +34,10 @@ def send_message(bot, message):
             chat_id=TELEGRAM_CHAT_ID,
             text=message,
         )
-    except telegram.TelegramError as error:
-        raise telegram.TelegramError(f'Не удалось отправить сообщение {error}')
-    finally:
+    except exceptions.TelegramError as error:
+        raise exceptions.TelegramError(
+            f'Не удалось отправить сообщение {error}')
+    else:
         logging.info(f'Сообщение отправлено {message}')
 
 
@@ -49,17 +50,23 @@ def get_api_answer(current_timestamp):
         'params': {'from_date': timestamp},
     }
     try:
-        logging.info('Начало запроса к API')
+        logging.info(
+            'Начало запроса: url = {url},'
+            'headers = {headers},'
+            'params = {params}'.format(**params_request))
         homework_statuses = requests.get(**params_request)
         if homework_statuses.status_code != HTTPStatus.OK:
             raise exceptions.InvalidResponseCode(
                 'Не удалось получить ответ API, '
-                f'ошибка: {homework_statuses.status_code}')
+                f'ошибка: {homework_statuses.status_code}'
+                f'причина: {homework_statuses.reason}'
+                f'текст: {homework_statuses.text}')
         return homework_statuses.json()
-    except exceptions.ConnectinError as e:
-        raise e('Не верный код ответа параметры запроса: url = {url},'
-                'headers = {headers},'
-                'params = {params}'.format(**params_request))
+    except Exception:
+        raise exceptions.ConnectinError(
+            'Не верный код ответа параметры запроса: url = {url},'
+            'headers = {headers},'
+            'params = {params}'.format(**params_request))
 
 
 def check_response(response):
@@ -71,7 +78,7 @@ def check_response(response):
         raise exceptions.EmptyResponseFromAPI('Пустой ответ от API')
     homeworks = response.get('homeworks')
     if not isinstance(homeworks, list):
-        raise TypeError('Homeworks не является списком')
+        raise KeyError('Homeworks не является списком')
     return homeworks
 
 
@@ -99,33 +106,44 @@ def check_tokens():
 def main():
     """Основная логика работы бота."""
     if not check_tokens():
-        logging.critical = ('Отсутсвуют переменные окружения')
-        sys.exit()
+        logging.critical('Отсутствует необходимое кол-во'
+                         ' переменных окружения')
+        sys.exit('Отсутсвуют переменные окружения')
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     current_timestamp = int(time.time())
-    prev_report = {}
-    current_report = {}
+    current_report = {
+        'name': '',
+        'output': ''
+    }
+    prev_report = current_report.copy()
     while True:
         try:
             response = get_api_answer(current_timestamp)
             current_timestamp = response.get(
-                'current_data') or current_timestamp
+                'current_data', 'current_timestamp')
             new_homeworks = check_response(response)
-            if new_homeworks != []:
+            if new_homeworks:
                 homework = new_homeworks[0]
-                current_report["homework_name"] = parse_status(homework)
+                current_report['name'] = homework.get('homework_name')
+                current_report['output'] = homework.get('status')
+            else:
+                logging.info('Нет новых статусов работ.')
             if current_report != prev_report:
-                send_message(bot, current_report["homework_name"])
+                send_message(bot, current_report['homework_name'],
+                             current_report['output'])
+                prev_report = current_report.copy()
             else:
                 logging.debug('Статус не поменялся')
-            prev_report = current_report.copy()
         except exceptions.NotForSending as error:
             message = f'Сбой в работе программы: {error}'
             logging.error(message)
         except Exception as error:
             message = f'Сбой в работе программы: {error}'
+            current_report['output'] = message
             logging.error(message)
-            send_message(bot, message)
+            if current_report != prev_report:
+                send_message(bot, message)
+                prev_report = current_report.copy
         finally:
             time.sleep(RETRY_TIME)
 

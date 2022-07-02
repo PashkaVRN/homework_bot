@@ -149,4 +149,4 @@ dmypy.json
 static/
 posts/static/
 media/
-
+log/

@@ -38,3 +38,8 @@
 2022-07-01 22:25:44,128, INFO, Путь - e:\Dev\homework_bot\homework.py, Файл - homework.py, Функция - get_api_answer, Номер строки - 52, Начало запроса к API
 2022-07-01 22:35:39,191, INFO, Путь - e:\Dev\homework_bot\homework.py, Файл - homework.py, Функция - get_api_answer, Номер строки - 52, Начало запроса к API
 2022-07-01 22:35:46,932, INFO, Путь - e:\Dev\homework_bot\homework.py, Файл - homework.py, Функция - get_api_answer, Номер строки - 52, Начало запроса к API
+2022-07-01 22:45:47,194, INFO, Путь - e:\Dev\homework_bot\homework.py, Файл - homework.py, Функция - get_api_answer, Номер строки - 52, Начало запроса к API
+2022-07-02 12:33:00,156, INFO, Путь - e:\Dev\homework_bot\homework.py, Файл - homework.py, Функция - get_api_answer, Номер строки - 53, Начало запроса: url = https://practicum.yandex.ru/api/user_api/homework_statuses/,headers = {'Authorization': 'OAuth AQAAAAAGCGhqAAYckUYklb77YkKHlZ74n4GAcx0'},params = {'from_date': 1656754380}
+2022-07-02 12:33:00,827, INFO, Путь - e:\Dev\homework_bot\homework.py, Файл - homework.py, Функция - main, Номер строки - 130, Нет новых статусов работ.
+2022-07-02 12:46:40,806, INFO, Путь - e:\Dev\homework_bot\homework.py, Файл - homework.py, Функция - get_api_answer, Номер строки - 53, Начало запроса: url = https://practicum.yandex.ru/api/user_api/homework_statuses/,headers = {'Authorization': 'OAuth AQAAAAAGCGhqAAYckUYklb77YkKHlZ74n4GAcx0'},params = {'from_date': 1656755200}
+2022-07-02 12:46:41,738, INFO, Путь - e:\Dev\homework_bot\homework.py, Файл - homework.py, Функция - main, Номер строки - 130, Нет новых статусов работ.
