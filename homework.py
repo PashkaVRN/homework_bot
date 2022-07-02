@@ -120,17 +120,17 @@ def main():
         try:
             response = get_api_answer(current_timestamp)
             current_timestamp = response.get(
-                'current_data', 'current_timestamp')
+                'current_data', current_timestamp)
             new_homeworks = check_response(response)
             if new_homeworks:
                 homework = new_homeworks[0]
                 current_report['name'] = homework.get('homework_name')
                 current_report['output'] = homework.get('status')
             else:
-                logging.info('Нет новых статусов работ.')
+                current_report['output'] = 'Нет новых статусов работ.'
             if current_report != prev_report:
-                send_message(bot, current_report['name'],
-                             current_report['output'])
+                send = 'f {current_report["name"], {current_report["output"]}'
+                send_message(bot, send)
                 prev_report = current_report.copy()
             else:
                 logging.debug('Статус не поменялся')
