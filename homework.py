@@ -129,7 +129,7 @@ def main():
             else:
                 logging.info('Нет новых статусов работ.')
             if current_report != prev_report:
-                send_message(bot, current_report['homework_name'],
+                send_message(bot, current_report['name'],
                              current_report['output'])
                 prev_report = current_report.copy()
             else:
